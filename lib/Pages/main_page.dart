@@ -34,7 +34,7 @@ class _CalcMainPageState extends State<CalcMainPage> {
           selectedItemColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Theme.of(context).colorScheme.tertiary,
           useLegacyColorScheme: false,
-          enableFeedback: false,
+          enableFeedback: true,
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectPage,
           onTap: _navigateBottomBar,
