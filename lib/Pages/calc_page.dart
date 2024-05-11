@@ -428,7 +428,7 @@ class _CalcPageState extends State<CalcPage> {
             DropdownButton<String>(
               elevation: 10,
               borderRadius: const BorderRadius.all(Radius.circular(30)),
-              dropdownColor: Colors.grey[400],
+              dropdownColor: Theme.of(context).colorScheme.secondary,//Colors.grey[400],
               value: _mode,
               onChanged: (String? newValue) {
                 setState(() {

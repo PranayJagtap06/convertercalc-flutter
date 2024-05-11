@@ -56,12 +56,26 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'calcapp'
+            keyPassword 'calcapp_keystore'
+            storeFile file('d:/flutter_projects/calcapp-keystore.jks')
+            storePassword 'calcapp_keystore'
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
+    }
+
+    ext {
+        // Add the Kotlin version here
+        kotlin_version = '1.8.22'
     }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:convertercalc_flutter/converter_tf.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,6 +22,7 @@ class _HistPageState extends State<HistPage> {
   final ScrollController scrollHist = ScrollController();
   final ScrollController scrollTF = ScrollController();
   bool _showHistory = true;
+  bool _isFabVisible = true;
 
   @override
   void initState() {
@@ -34,23 +36,17 @@ class _HistPageState extends State<HistPage> {
         });
       });
     });
-    // _getDownloadPath().then((downloadPath) {
-    //   filePath = '$downloadPath/history.txt';
-    // });
+    scrollData.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
+    scrollData.removeListener(_scrollListener);
     scrollData.dispose();
+    scrollHist.dispose();
+    scrollTF.dispose();
     super.dispose();
   }
-
-  // Future<String> _getDownloadPath() async {
-  //   final directory =
-  //       await getExternalStorageDirectories(type: StorageDirectory.downloads);
-  //   final downloadPath = directory?.first.path;
-  //   return downloadPath ?? '';
-  // }
 
   Future<String> _getrootPath() async {
     final Directory? directory = await getExternalStorageDirectory();
@@ -71,6 +67,23 @@ class _HistPageState extends State<HistPage> {
     String jsonString = jsonEncode(list);
     File file = File(filePath);
     file.writeAsStringSync(jsonString);
+  }
+
+  void _scrollListener() {
+    if (scrollData.position.userScrollDirection == ScrollDirection.reverse) {
+      if (_isFabVisible) {
+        setState(() {
+          _isFabVisible = false;
+        });
+      }
+    } else if (scrollData.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      if (!_isFabVisible) {
+        setState(() {
+          _isFabVisible = true;
+        });
+      }
+    }
   }
 
   void _handleCardClick(int index) {
@@ -342,58 +355,83 @@ class _HistPageState extends State<HistPage> {
               'No history available',
               style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
             ))
-          : Scrollbar(
-              thumbVisibility: true,
-              controller: scrollData,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(12),
+          : NotificationListener(
+              onNotification: (notification) {
+                return true;
+              },
+              child: Scrollbar(
+                thumbVisibility: true,
                 controller: scrollData,
-                itemCount: _histList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final item = _histList[index];
-                  return Card(
-                    elevation: 5,
-                    shadowColor: Theme.of(context).colorScheme.secondary,
-                    surfaceTintColor: Theme.of(context).colorScheme.secondary,
-                    child: ListTile(
-                      title: Text(
-                        "${item['no']}.  Mode: ${item['mode']}  Vin: ${item['vin']}V  Vo: ${item['vo']}V  Ro: ${item['ro']}ohm  Freq: ${item['fsw']}Hz",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'FiraCodeNerdFontPropo',
-                          fontWeight: FontWeight.w200,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  controller: scrollData,
+                  itemCount: _histList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final item = _histList[index];
+                    return Card(
+                      elevation: 5,
+                      shadowColor: Theme.of(context).colorScheme.secondary,
+                      surfaceTintColor: Theme.of(context).colorScheme.secondary,
+                      child: ListTile(
+                        title: Text(
+                          "${item['no']}.  Mode: ${item['mode']}  Vin: ${item['vin']}V  Vo: ${item['vo']}V  Ro: ${item['ro']}ohm  Freq: ${item['fsw']}Hz",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: 'FiraCodeNerdFontPropo',
+                            fontWeight: FontWeight.w200,
+                          ),
                         ),
+                        onTap: () => _handleCardClick(index),
+                        enabled: true,
                       ),
-                      onTap: () => _handleCardClick(index),
-                      enabled: true,
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            foregroundColor: Theme.of(context).colorScheme.tertiary,
-            onPressed: _clearHistory,
-            heroTag: 'delete-button',
-            tooltip: 'delete history',
-            child: const Icon(Icons.delete),
-          ),
-          const SizedBox(
-            width: 10.0,
-          ),
-          FloatingActionButton(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            foregroundColor: Theme.of(context).colorScheme.tertiary,
-            onPressed: _shareHistoryFile,
-            heroTag: 'share-button',
-            tooltip: 'share history',
-            child: const Icon(Icons.share_rounded),
-          ),
-        ],
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          final offsetAnimation = Tween<Offset>(
+            begin: const Offset(0.0, 1.0), // Start position
+            end: Offset.zero, // End position
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic, // Use a smooth curve
+            ),
+          );
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        child: _isFabVisible
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.tertiary,
+                    onPressed: _clearHistory,
+                    heroTag: 'delete-button',
+                    tooltip: 'delete history',
+                    child: const Icon(Icons.delete),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  FloatingActionButton(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.tertiary,
+                    onPressed: _shareHistoryFile,
+                    heroTag: 'share-button',
+                    tooltip: 'share history',
+                    child: const Icon(Icons.share_rounded),
+                  ),
+                ],
+              )
+            : const SizedBox(),
       ),
     );
   }
