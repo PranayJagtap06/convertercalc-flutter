@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 class CalcPage extends StatefulWidget {
-  const CalcPage({super.key});
+  const CalcPage({super.key, required this.isDark});
+
+  final bool isDark;
 
   @override
   State<CalcPage> createState() => _CalcPageState();
@@ -55,10 +57,28 @@ class _CalcPageState extends State<CalcPage> {
         });
       });
     });
+    _focusNodevin.addListener(_handleFocusChange);
+    _focusNodevo.addListener(_handleFocusChange);
+    _focusNodero.addListener(_handleFocusChange);
+    _focusNodefsw.addListener(_handleFocusChange);
+    _focusNodeIrp.addListener(_handleFocusChange);
+    _focusNodeVrp.addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
+    _focusNodevin.removeListener(_handleFocusChange);
+    _focusNodevo.removeListener(_handleFocusChange);
+    _focusNodero.removeListener(_handleFocusChange);
+    _focusNodefsw.removeListener(_handleFocusChange);
+    _focusNodeIrp.removeListener(_handleFocusChange);
+    _focusNodeVrp.removeListener(_handleFocusChange);
+    _focusNodevin.dispose();
+    _focusNodevo.dispose();
+    _focusNodero.dispose();
+    _focusNodefsw.dispose();
+    _focusNodeIrp.dispose();
+    _focusNodeVrp.dispose();
     scrollMain.dispose();
     scrollOp.dispose();
     super.dispose();
@@ -408,6 +428,43 @@ class _CalcPageState extends State<CalcPage> {
     });
   }
 
+  final FocusNode _focusNodevin = FocusNode();
+  final FocusNode _focusNodevo = FocusNode();
+  final FocusNode _focusNodero = FocusNode();
+  final FocusNode _focusNodefsw = FocusNode();
+  final FocusNode _focusNodeIrp = FocusNode();
+  final FocusNode _focusNodeVrp = FocusNode();
+
+  void _handleFocusChange() {
+    setState(() {
+      // Force a rebuild to update the fill color based on the focus state
+    });
+  }
+
+  Color _getFillColor(bool hasFocus) {
+    if (widget.isDark) {
+      return hasFocus ? Colors.amber[600]! : Colors.transparent;
+    } else {
+      return hasFocus ? Colors.blue[600]! : Colors.transparent;
+    }
+  }
+
+  TextStyle _getHintStyle(bool hasFocus) {
+    if (widget.isDark) {
+      return TextStyle(
+        fontFamily: 'FiraCodeNerdFontPropo',
+        fontSize: 13,
+        color: hasFocus ? Colors.black : Colors.grey,
+      );
+    } else {
+      return TextStyle(
+        fontFamily: 'FiraCodeNerdFontPropo',
+        fontSize: 13,
+        color: hasFocus ? Colors.white : Colors.grey,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -428,7 +485,8 @@ class _CalcPageState extends State<CalcPage> {
             DropdownButton<String>(
               elevation: 10,
               borderRadius: const BorderRadius.all(Radius.circular(30)),
-              dropdownColor: Theme.of(context).colorScheme.secondary,//Colors.grey[400],
+              dropdownColor:
+                  Theme.of(context).colorScheme.secondary, //Colors.grey[400],
               value: _mode,
               onChanged: (String? newValue) {
                 setState(() {
@@ -456,25 +514,26 @@ class _CalcPageState extends State<CalcPage> {
               controller: vin,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodevin.hasFocus),
                 hintText: 'Input Voltage (Vin)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
+                hintStyle: _getHintStyle(_focusNodevin.hasFocus),
                 helperText: 'Enter the desired input voltage of converter.',
                 helperMaxLines: 2,
                 helperStyle: const TextStyle(
@@ -489,6 +548,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodevin,
             ),
             const SizedBox(
               height: 16.0,
@@ -497,25 +557,24 @@ class _CalcPageState extends State<CalcPage> {
               controller: vo,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodevo.hasFocus),
                 hintText: 'Output Voltage (Vo)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
+                hintStyle: _getHintStyle(_focusNodevo.hasFocus),
                 helperText: 'Enter the desired output voltage of converter.',
                 helperMaxLines: 2,
                 helperStyle: const TextStyle(
@@ -530,6 +589,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodevo,
             ),
             const SizedBox(
               height: 16.0,
@@ -538,27 +598,25 @@ class _CalcPageState extends State<CalcPage> {
               controller: ro,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodero.hasFocus),
                 hintText: 'Output Resistance (Ro)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
-                helperText:
-                    'Enter the desired output resistance of converter.',
+                hintStyle: _getHintStyle(_focusNodero.hasFocus),
+                helperText: 'Enter the desired output resistance of converter.',
                 helperMaxLines: 2,
                 helperStyle: const TextStyle(
                     fontFamily: 'FiraCodeNerdFontMono', fontSize: 10),
@@ -572,6 +630,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodero,
             ),
             const SizedBox(
               height: 16.0,
@@ -580,25 +639,24 @@ class _CalcPageState extends State<CalcPage> {
               controller: fsw,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodefsw.hasFocus),
                 hintText: 'Operating Frequncy (fsw)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
+                hintStyle: _getHintStyle(_focusNodefsw.hasFocus),
                 helperText:
                     'Enter the desired operating frequeny of converter.',
                 helperMaxLines: 2,
@@ -614,6 +672,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodefsw,
             ),
             const SizedBox(
               height: 16.0,
@@ -622,25 +681,24 @@ class _CalcPageState extends State<CalcPage> {
               controller: ipIripl,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodeIrp.hasFocus),
                 hintText: 'Percentage i/p Ripple Current (Irp)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
+                hintStyle: _getHintStyle(_focusNodeIrp.hasFocus),
                 helperText:
                     'Enter the desired input ripple current percentage of converter.',
                 helperMaxLines: 2,
@@ -656,6 +714,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodeIrp,
             ),
             const SizedBox(
               height: 16.0,
@@ -664,25 +723,24 @@ class _CalcPageState extends State<CalcPage> {
               controller: vrp,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                focusColor: Colors.blue[100],
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.grey,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.blue, // Change this to your desired color
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
                 ),
                 filled: true,
+                fillColor: _getFillColor(_focusNodeVrp.hasFocus),
                 hintText: 'Percentage o/p Ripple Voltage (Vrp)',
-                hintStyle: const TextStyle(
-                    fontFamily: 'FiraCodeNerdFontPropo', fontSize: 13),
+                hintStyle: _getHintStyle(_focusNodeVrp.hasFocus),
                 helperText:
                     'Enter the desired output ripple voltage percentage of converter.',
                 helperMaxLines: 2,
@@ -698,6 +756,7 @@ class _CalcPageState extends State<CalcPage> {
               onEditingComplete: () {
                 FocusScope.of(context).nextFocus();
               },
+              focusNode: _focusNodeVrp,
             ),
             const SizedBox(
               height: 16.0,

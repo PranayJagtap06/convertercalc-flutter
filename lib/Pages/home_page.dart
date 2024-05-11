@@ -310,7 +310,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
               ),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CalcMainPage()),
+                MaterialPageRoute(builder: (context) => CalcMainPage(isDark: widget.isDark,)),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,

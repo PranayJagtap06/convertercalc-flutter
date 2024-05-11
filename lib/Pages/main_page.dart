@@ -3,7 +3,9 @@ import 'package:convertercalc_flutter/Pages/hist_page.dart';
 import 'package:flutter/material.dart';
 
 class CalcMainPage extends StatefulWidget {
-  const CalcMainPage({super.key});
+  const CalcMainPage({super.key, required this.isDark});
+
+  final bool isDark;
 
   @override
   State<CalcMainPage> createState() => _CalcMainPageState();
@@ -12,7 +14,15 @@ class CalcMainPage extends StatefulWidget {
 class _CalcMainPageState extends State<CalcMainPage> {
   int _selectPage = 0;
 
-  final List _pages = [const CalcPage(), const HistPage()];
+  // final List _pages = [CalcPage(isDark: widget.isDark,), const HistPage()];
+
+  late List _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [CalcPage(isDark: widget.isDark,), const HistPage()];
+  }
 
   void _navigateBottomBar(int page) {
     setState(() {

@@ -103,7 +103,7 @@ class _CalcAppState extends State<CalcApp> {
         isDark: _isDarkTheme,
       ),
       routes: {
-        '/mainpage': (context) => const CalcMainPage(),
+        '/mainpage': (context) => CalcMainPage(isDark: _isDarkTheme,),
       },
     );
   }
