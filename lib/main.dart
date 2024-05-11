@@ -77,7 +77,7 @@ class _CalcAppState extends State<CalcApp> {
     final lightTheme = ThemeData(
       colorScheme: const ColorScheme.light().copyWith(
         primary: Colors.black,
-        secondary: Colors.blue,
+        secondary: Colors.amber,
         tertiary: Colors.white,
       ),
     );

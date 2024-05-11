@@ -442,11 +442,12 @@ class _CalcPageState extends State<CalcPage> {
   }
 
   Color _getFillColor(bool hasFocus) {
-    if (widget.isDark) {
-      return hasFocus ? Colors.amber[600]! : Colors.transparent;
-    } else {
-      return hasFocus ? Colors.blue[600]! : Colors.transparent;
-    }
+    // if (widget.isDark) {
+    //   return hasFocus ? Colors.amber[600]! : Colors.transparent;
+    // } else {
+    //   return hasFocus ? Colors.blue[600]! : Colors.transparent;
+    // }
+    return hasFocus ? Theme.of(context).colorScheme.secondary : Colors.transparent;
   }
 
   TextStyle _getHintStyle(bool hasFocus) {
@@ -482,30 +483,64 @@ class _CalcPageState extends State<CalcPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            DropdownButton<String>(
-              elevation: 10,
-              borderRadius: const BorderRadius.all(Radius.circular(30)),
-              dropdownColor:
-                  Theme.of(context).colorScheme.secondary, //Colors.grey[400],
-              value: _mode,
-              onChanged: (String? newValue) {
-                setState(() {
-                  if (newValue != null) {
-                    _mode = newValue;
-                  }
-                });
-              },
-              items: ["Boost", "Buck", "BuckBoost"]
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                        fontFamily: 'FiraCodeNerdFontPropo', fontSize: 16),
-                  ),
-                );
-              }).toList(),
+            // DropdownButton<String>(
+            //   elevation: 10,
+            //   borderRadius: const BorderRadius.all(Radius.circular(30)),
+            //   dropdownColor:
+            //       Theme.of(context).colorScheme.secondary, //Colors.grey[400],
+            //   value: _mode,
+            //   onChanged: (String? newValue) {
+            //     setState(() {
+            //       if (newValue != null) {
+            //         _mode = newValue;
+            //       }
+            //     });
+            //   },
+            //   items: ["Boost", "Buck", "BuckBoost"]
+            //       .map<DropdownMenuItem<String>>((String value) {
+            //     return DropdownMenuItem<String>(
+            //       value: value,
+            //       child: Text(
+            //         value,
+            //         style: const TextStyle(
+            //             fontFamily: 'FiraCodeNerdFontPropo', fontSize: 16),
+            //       ),
+            //     );
+            //   }).toList(),
+            // ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 1,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50)),
+              ),
+              onPressed: () {  },
+              child: DropdownButton<String>(
+                underline: Container(), // Remove the default underline
+                borderRadius: const BorderRadius.all(Radius.circular(30)),
+                dropdownColor: Theme.of(context).colorScheme.secondary,
+                value: _mode,
+                style: const TextStyle(fontFamily: 'FiraCodeNerdFontPropo', color: Colors.white),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    if (newValue != null) {
+                      _mode = newValue;
+                    }
+                  });
+                },
+                items: ["Boost", "Buck", "BuckBoost"]
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                          fontFamily: 'FiraCodeNerdFontPropo', fontSize: 16),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(
               height: 16.0,
@@ -566,7 +601,9 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
@@ -607,7 +644,9 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
@@ -648,7 +687,9 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
@@ -690,7 +731,9 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
@@ -732,7 +775,9 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, // Change this to your desired color
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Change this to your desired color
                     width: 2.0, // Adjust the border width as needed
                   ),
                   borderRadius: BorderRadius.circular(50.0),
