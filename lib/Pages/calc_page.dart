@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:convertercalc_flutter/converter_package.dart';
+import 'package:convertercalc_flutter/converter_tf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,6 +46,7 @@ class _CalcPageState extends State<CalcPage> {
       \tMinimum inductor ripple current = 0.0A
       \tOutput Capacitor = 0.0F
       \tCapacitor ESR = 0.0Ohms""";
+  String tfString = '';
 
   @override
   void initState() {
@@ -331,9 +333,9 @@ class _CalcPageState extends State<CalcPage> {
       \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
       \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
       \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
-      \tFrequency, fsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
-      \tIrp = ${ipIripl.text}A
-      \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}""";
+      \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
+      \tIrp = ${ipIripl.text}%
+      \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
 
       opString = """Converter Parameters
        \tDuty Cycle = ${d.toStringAsFixed(3)}
@@ -351,9 +353,11 @@ class _CalcPageState extends State<CalcPage> {
        \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
        \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
 
-      mainOp = opString;
+      tfString = returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
 
-      String history = '$ipString\n$opString';
+      mainOp = "$opString\nTransferFunction\n$tfString";
+
+      String history = '$ipString\n$mainOp';
       int srNo = _histList.length + 1;
       var histMap = {
         'no': srNo,
@@ -447,7 +451,9 @@ class _CalcPageState extends State<CalcPage> {
     // } else {
     //   return hasFocus ? Colors.blue[600]! : Colors.transparent;
     // }
-    return hasFocus ? Theme.of(context).colorScheme.secondary : Colors.transparent;
+    return hasFocus
+        ? Theme.of(context).colorScheme.secondary
+        : Colors.transparent;
   }
 
   TextStyle _getHintStyle(bool hasFocus) {
@@ -515,13 +521,14 @@ class _CalcPageState extends State<CalcPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
               ),
-              onPressed: () {  },
+              onPressed: () {},
               child: DropdownButton<String>(
                 underline: Container(), // Remove the default underline
                 borderRadius: const BorderRadius.all(Radius.circular(30)),
                 dropdownColor: Theme.of(context).colorScheme.secondary,
                 value: _mode,
-                style: const TextStyle(fontFamily: 'FiraCodeNerdFontPropo', color: Colors.white),
+                style: const TextStyle(
+                    fontFamily: 'FiraCodeNerdFontPropo', color: Colors.white),
                 onChanged: (String? newValue) {
                   setState(() {
                     if (newValue != null) {

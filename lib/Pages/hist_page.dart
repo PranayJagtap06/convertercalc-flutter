@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:convertercalc_flutter/converter_tf.dart';
+// import 'package:convertercalc_flutter/converter_tf.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class _HistPageState extends State<HistPage> {
   final ScrollController scrollData = ScrollController();
   final ScrollController scrollHist = ScrollController();
   final ScrollController scrollTF = ScrollController();
-  bool _showHistory = true;
+  // bool _showHistory = true;
   bool _isFabVisible = true;
 
   @override
@@ -99,47 +99,63 @@ class _HistPageState extends State<HistPage> {
             'History ${item['no']}',
             style: const TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
           ),
-          content: _showHistory
-              ? Scrollbar(
-                  thumbVisibility: true,
-                  controller: scrollHist,
-                  child: SingleChildScrollView(
-                    controller: scrollHist,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      item['hist'],
-                      style: const TextStyle(
-                        fontFamily: 'FiraCodeNerdFontMono',
-                        fontWeight: FontWeight.w200,
-                      ),
-                    ),
-                  ),
-                )
-              : Scrollbar(
-                  thumbVisibility: true,
-                  controller: scrollTF,
-                  child: SingleChildScrollView(
-                    controller: scrollTF,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      returnTF(
-                        item['mode'],
-                        num.parse(item['vin']),
-                        item['D'],
-                        num.parse(item['ro']),
-                        item['ind'],
-                        item['cap'],
-                      ),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: 'FiraCodeNerdFontMono',
-                        fontWeight: FontWeight.w200,
-                      ),
-                    ),
-                  ),
+          content: Scrollbar(
+            thumbVisibility: true,
+            controller: scrollHist,
+            child: SingleChildScrollView(
+              controller: scrollHist,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                item['hist'],
+                style: const TextStyle(
+                  fontFamily: 'FiraCodeNerdFontMono',
+                  fontWeight: FontWeight.w200,
                 ),
+              ),
+            ),
+          ),
+          //_showHistory
+          // ? Scrollbar(
+          //     thumbVisibility: true,
+          //     controller: scrollHist,
+          //     child: SingleChildScrollView(
+          //       controller: scrollHist,
+          //       scrollDirection: Axis.horizontal,
+          //       padding: const EdgeInsets.all(10),
+          //       child: Text(
+          //         item['hist'],
+          //         style: const TextStyle(
+          //           fontFamily: 'FiraCodeNerdFontMono',
+          //           fontWeight: FontWeight.w200,
+          //         ),
+          //       ),
+          //     ),
+          //   )
+          // : Scrollbar(
+          //     thumbVisibility: true,
+          //     controller: scrollTF,
+          //     child: SingleChildScrollView(
+          //       controller: scrollTF,
+          //       scrollDirection: Axis.horizontal,
+          //       padding: const EdgeInsets.all(10),
+          //       child: Text(
+          //         returnTF(
+          //           item['mode'],
+          //           num.parse(item['vin']),
+          //           item['D'],
+          //           num.parse(item['ro']),
+          //           item['ind'],
+          //           item['cap'],
+          //         ),
+          //         textAlign: TextAlign.center,
+          //         style: const TextStyle(
+          //           fontFamily: 'FiraCodeNerdFontMono',
+          //           fontWeight: FontWeight.w200,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -149,51 +165,52 @@ class _HistPageState extends State<HistPage> {
               ),
             ),
             TextButton(
-                onPressed: () async {
-                  if (_showHistory) {
-                    await Clipboard.setData(ClipboardData(text: item['hist']));
-                  } else {
-                    await Clipboard.setData(
-                      ClipboardData(
-                        text: returnTF(
-                          item['mode'],
-                          num.parse(item['vin']),
-                          item['D'],
-                          num.parse(item['ro']),
-                          item['ind'],
-                          item['cap'],
-                        ),
-                      ),
-                    );
-                  }
-                  Navigator.of(context).pop(); // Close the dialog
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Content copied to clipboard',
-                        style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
-                      ),
-                      duration: Duration(seconds: 3),
+              onPressed: () async {
+                // if (_showHistory) {
+                await Clipboard.setData(ClipboardData(text: item['hist']));
+                // } else {
+                //   await Clipboard.setData(
+                //     ClipboardData(
+                //       text: returnTF(
+                //         item['mode'],
+                //         num.parse(item['vin']),
+                //         item['D'],
+                //         num.parse(item['ro']),
+                //         item['ind'],
+                //         item['cap'],
+                //       ),
+                //     ),
+                //   );
+                // }
+                Navigator.of(context).pop(); // Close the dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Content copied to clipboard',
+                      style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
                     ),
-                  );
-                },
-                child: const Text(
-                  'Copy',
-                  style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-                )),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _showHistory = !_showHistory;
-                });
-                Navigator.of(context).pop();
-                _handleCardClick(index);
+                    duration: Duration(seconds: 3),
+                  ),
+                );
               },
               child: const Text(
-                'TF/Hist',
+                'Copy',
                 style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
               ),
-            )
+            ),
+            // TextButton(
+            //   onPressed: () {
+            //     setState(() {
+            //       _showHistory = !_showHistory;
+            //     });
+            //     Navigator.of(context).pop();
+            //     _handleCardClick(index);
+            //   },
+            //   child: const Text(
+            //     'TF/Hist',
+            //     style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
+            //   ),
+            // ),
           ],
         );
       },
@@ -302,16 +319,16 @@ class _HistPageState extends State<HistPage> {
     final content = _histList.asMap().entries.map((entry) {
       // final index = entry.key + 1;
       final item = entry.value;
-      final tf = returnTF(
-        item['mode'],
-        num.parse(item['vin']),
-        item['D'],
-        num.parse(item['ro']),
-        item['ind'],
-        item['cap'],
-      );
-      return 'Sr.No. ${item['no']}:\n${item['hist']}\n$tf\n\n';
-    }).join('\n\n');
+      // final tf = returnTF(
+      //   item['mode'],
+      //   num.parse(item['vin']),
+      //   item['D'],
+      //   num.parse(item['ro']),
+      //   item['ind'],
+      //   item['cap'],
+      // );
+      return 'Sr.No. ${item['no']}:\n${item['hist']}';
+    }).join('\n\n\n');
 
     await file.writeAsString(content);
     // ScaffoldMessenger.of(context).showSnackBar(
