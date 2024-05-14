@@ -219,7 +219,7 @@ class _PlotPageState extends State<PlotPage> {
             ),
             body: const Center(
               child: Text(
-                'No Image.',
+                'No Plot.',
                 style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
               ),
             ),
