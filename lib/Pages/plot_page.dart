@@ -19,9 +19,8 @@ class PlotPage extends StatefulWidget {
 }
 
 class _PlotPageState extends State<PlotPage> {
-  late Image img;
-  late Uint8List bytes;
-  // late String op = '';
+  late Uint8List bytes = Uint8List(0);
+  late Image img = Image.memory(bytes, fit: BoxFit.fitWidth,);
   bool _isInitialized = false;
   late bool connection;
   late bool _isImg;
@@ -31,38 +30,19 @@ class _PlotPageState extends State<PlotPage> {
   void initState() {
     super.initState();
     _imgPath();
-    checkInertnetConnectivity().then((connection) {
-      try {
-        if (connection) {
-          _plotResponse().then((_) {
-            setState(() {
-              _isInitialized = true;
-              _isImg = true;
-            });
-          });
-        } else {
-          setState(() {
-            _isInitialized = true;
-            _isImg = false;
-          });
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                    icon: Icon(Icons
-                        .signal_wifi_statusbar_connected_no_internet_4_rounded),
-                    surfaceTintColor: Colors.redAccent,
-                    title: Text(
-                      'No Internet Connection!',
-                      style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
-                    ),
-                    content: Text(
-                      'Please check your internet connection.',
-                      style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
-                    ));
-              });
-        }
-      } on Exception catch (e) {
+    _initializePlot();
+  }
+
+  Future<void> _initializePlot() async {
+    try {
+      final connection = await checkInertnetConnectivity();
+      if (connection) {
+        await _plotResponse();
+        setState(() {
+          _isInitialized = true;
+          _isImg = true;
+        });
+      } else {
         setState(() {
           _isInitialized = true;
           _isImg = false;
@@ -70,20 +50,41 @@ class _PlotPageState extends State<PlotPage> {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
-                  icon: const Icon(Icons.error_outline_rounded),
+              return const AlertDialog(
+                  icon: Icon(Icons
+                      .signal_wifi_statusbar_connected_no_internet_4_rounded),
                   surfaceTintColor: Colors.redAccent,
-                  title: const Text(
-                    'Error!',
+                  title: Text(
+                    'No Internet Connection!',
                     style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
                   ),
                   content: Text(
-                    'Error occured.\nError: $e',
-                    style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+                    'Please check your internet connection.',
+                    style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
                   ));
             });
       }
-    });
+    } on Exception catch (e) {
+      setState(() {
+        _isInitialized = true;
+        _isImg = false;
+      });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                icon: const Icon(Icons.error_outline_rounded),
+                surfaceTintColor: Colors.redAccent,
+                title: const Text(
+                  'Error!',
+                  style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
+                ),
+                content: Text(
+                  'Error occured.\nError: $e',
+                  style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+                ));
+          });
+    }
   }
 
   Future<bool> checkInertnetConnectivity(
@@ -117,7 +118,6 @@ class _PlotPageState extends State<PlotPage> {
           bytes,
           fit: BoxFit.fitWidth,
         );
-        // op = result;
       });
     } else {
       setState(() {
@@ -155,7 +155,7 @@ class _PlotPageState extends State<PlotPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Image shared successfully from $filePath',
+                  'Successfully shared Image in $filePath.',
                   style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
                 ),
                 duration: const Duration(seconds: 5),
