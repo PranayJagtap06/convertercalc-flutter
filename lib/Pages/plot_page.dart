@@ -148,7 +148,7 @@ class _PlotPageState extends State<PlotPage> {
           final result = await Share.shareXFiles(
             [XFile(filePath)],
             subject: 'TF Response',
-            text: 'Here is the generated image.',
+            text: 'Here is the generated plot.',
             sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
           );
           if (result.status == ShareResultStatus.success) {
