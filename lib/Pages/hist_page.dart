@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:convertercalc_flutter/converter_tf.dart';
+import 'package:convertercalc_flutter/Pages/plot_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class HistPage extends StatefulWidget {
-  const HistPage({super.key});
+  const HistPage({
+    super.key,
+  });
 
   @override
   State<HistPage> createState() => _HistPageState();
@@ -158,13 +161,6 @@ class _HistPageState extends State<HistPage> {
           //   ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'OK',
-                style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-              ),
-            ),
-            TextButton(
               onPressed: () async {
                 // if (_showHistory) {
                 await Clipboard.setData(ClipboardData(text: item['hist']));
@@ -195,6 +191,37 @@ class _HistPageState extends State<HistPage> {
               },
               child: const Text(
                 'Copy',
+                style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                final data = {
+                  "d": item['D'],
+                  "vin": item['vin'],
+                  "inductor": item['ind'],
+                  "capacitor": item['cap'],
+                  "resistor": item['ro'],
+                  "mode": item['mode'],
+                };
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PlotPage(plotdata: data)),
+                );
+              },
+              child: const Text(
+                'Plot TF',
+                style: TextStyle(
+                  fontFamily: 'FiraCodeNerdFontPropo',
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'OK',
                 style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
               ),
             ),
@@ -276,7 +303,11 @@ class _HistPageState extends State<HistPage> {
     try {
       _writeToTextFile().then((file) async {
         if (await file.exists()) {
-          final result = await Share.shareXFiles([XFile(filePath)]);
+          final result = await Share.shareXFiles(
+            [XFile(filePath)],
+            subject: 'History File',
+            text: 'Here is the generated histpry file.',
+          );
           if (result.status == ShareResultStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -304,7 +335,7 @@ class _HistPageState extends State<HistPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Something went wrong.\n$e',
+            'Something went wrong.\nError: $e',
             style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
           ),
           duration: const Duration(seconds: 3),

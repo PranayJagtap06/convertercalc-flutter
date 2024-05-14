@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:convertercalc_flutter/Pages/home_page.dart';
 import 'package:convertercalc_flutter/Pages/main_page.dart';
+import 'package:convertercalc_flutter/Pages/plot_page.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -74,6 +75,8 @@ class _CalcAppState extends State<CalcApp> {
 
   @override
   Widget build(BuildContext context) {
+    final plotdata = {};
+
     final lightTheme = ThemeData(
       colorScheme: const ColorScheme.light().copyWith(
         primary: Colors.black,
@@ -103,7 +106,10 @@ class _CalcAppState extends State<CalcApp> {
         isDark: _isDarkTheme,
       ),
       routes: {
-        '/mainpage': (context) => CalcMainPage(isDark: _isDarkTheme,),
+        '/mainpage': (context) => CalcMainPage(
+              isDark: _isDarkTheme,
+            ),
+        '/plotpage': (context) => PlotPage(plotdata: plotdata,),
       },
     );
   }
