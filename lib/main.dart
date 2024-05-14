@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:convertercalc_flutter/Pages/home_page.dart';
@@ -42,12 +43,11 @@ class _CalcAppState extends State<CalcApp> {
       final jsonData = jsonDecode(jsonString);
       setState(() {
         _isDarkTheme = jsonData['darkstate'];
-        // _isInitialized = true;
       });
     } else {
       setState(() {
         _isDarkTheme = false;
-        // _isInitialized = true;
+        _saveThemeState();
       });
     }
   }
@@ -109,7 +109,9 @@ class _CalcAppState extends State<CalcApp> {
         '/mainpage': (context) => CalcMainPage(
               isDark: _isDarkTheme,
             ),
-        '/plotpage': (context) => PlotPage(plotdata: plotdata,),
+        '/plotpage': (context) => PlotPage(
+              plotdata: plotdata,
+            ),
       },
     );
   }
