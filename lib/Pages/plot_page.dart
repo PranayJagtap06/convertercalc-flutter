@@ -204,7 +204,7 @@ class _PlotPageState extends State<PlotPage> {
               foregroundColor: Theme.of(context).colorScheme.tertiary,
               onPressed: _shareImgFile,
               heroTag: 'share-button',
-              tooltip: 'share history',
+              tooltip: 'share image',
               child: const Icon(Icons.share_rounded),
             ),
           )
