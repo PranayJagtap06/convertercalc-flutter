@@ -460,13 +460,13 @@ class _CalcPageState extends State<CalcPage> {
     if (widget.isDark) {
       return TextStyle(
         fontFamily: 'FiraCodeNerdFontPropo',
-        fontSize: 13,
+        fontSize: 12,
         color: hasFocus ? Colors.black : Colors.grey,
       );
     } else {
       return TextStyle(
         fontFamily: 'FiraCodeNerdFontPropo',
-        fontSize: 13,
+        fontSize: 12,
         color: hasFocus ? Colors.white : Colors.grey,
       );
     }
@@ -747,10 +747,11 @@ class _CalcPageState extends State<CalcPage> {
                 ),
                 filled: true,
                 fillColor: _getFillColor(_focusNodeIrp.hasFocus),
-                hintText: 'Percentage i/p Ripple Current (Irp)',
+                hintText: 'Percentage i/p Ripple Current (Irp) (optional)',
+                hintMaxLines: 2,
                 hintStyle: _getHintStyle(_focusNodeIrp.hasFocus),
                 helperText:
-                    'Enter the desired input ripple current percentage of converter.',
+                    'Enter the desired input ripple current percentage of converter. Eg.: 40',
                 helperMaxLines: 2,
                 helperStyle: const TextStyle(
                     fontFamily: 'FiraCodeNerdFontMono', fontSize: 10),
@@ -794,7 +795,7 @@ class _CalcPageState extends State<CalcPage> {
                 hintText: 'Percentage o/p Ripple Voltage (Vrp)',
                 hintStyle: _getHintStyle(_focusNodeVrp.hasFocus),
                 helperText:
-                    'Enter the desired output ripple voltage percentage of converter.',
+                    'Enter the desired output ripple voltage percentage of converter. Eg.: 0.5',
                 helperMaxLines: 2,
                 helperStyle: const TextStyle(
                     fontFamily: 'FiraCodeNerdFontMono', fontSize: 10),
