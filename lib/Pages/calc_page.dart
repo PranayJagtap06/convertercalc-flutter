@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:convertercalc_flutter/converter_package.dart';
-import 'package:convertercalc_flutter/converter_tf.dart';
+// import 'package:convertercalc_flutter/converter_tf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tuple/tuple.dart';
+import 'package:http/http.dart' as http;
 // import 'package:permission_handler/permission_handler.dart';
 
 class CalcPage extends StatefulWidget {
@@ -47,6 +50,9 @@ class _CalcPageState extends State<CalcPage> {
       \tOutput Capacitor = 0.0F
       \tCapacitor ESR = 0.0Ohms""";
   String tfString = '';
+  late bool iConnection;
+  late String fdbk;
+  bool _mainOpInitialized = true;
 
   @override
   void initState() {
@@ -59,6 +65,12 @@ class _CalcPageState extends State<CalcPage> {
         });
       });
     });
+
+    _checkInternetConnectivity().then((_) {
+      // Now you can be sure that _checkInternetConnectivity has finished executing
+      // and iConnection and fdbk have been set.
+    });
+
     _focusNodevin.addListener(_handleFocusChange);
     _focusNodevo.addListener(_handleFocusChange);
     _focusNodero.addListener(_handleFocusChange);
@@ -158,6 +170,110 @@ class _CalcPageState extends State<CalcPage> {
         ],
       ),
     );
+  }
+
+  Future<Tuple2<bool, String>> checkInternetConnectivity(
+      {Duration timeout = const Duration(seconds: 5)}) async {
+    try {
+      final response = await http.get(Uri.parse('https://www.google.com'));
+      if (response.statusCode == 200) {
+        return const Tuple2(true, '');
+      } else {
+        return const Tuple2(false, 'Please check your internet connection.');
+      }
+    } on SocketException {
+      return const Tuple2(false, 'Please check your internet connection.');
+    } on TimeoutException catch (e) {
+      return Tuple2(false, '$e');
+    } catch (e) {
+      return Tuple2(false, '$e');
+    }
+  }
+
+  Future<void> _checkInternetConnectivity() async {
+    final result = await checkInternetConnectivity();
+    setState(() {
+      iConnection = result.item1;
+      fdbk = result.item2;
+    });
+  }
+
+  void _noInternetDialog(String txt) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              icon: const Icon(
+                  Icons.signal_wifi_statusbar_connected_no_internet_4_rounded),
+              surfaceTintColor: Colors.redAccent,
+              title: const Text(
+                'No Internet Connection!',
+                style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
+              ),
+              content: Text(
+                txt,
+                style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+              ));
+        });
+  }
+
+  void _exceptionDialog(String e) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              icon: const Icon(Icons.error_outline_rounded),
+              surfaceTintColor: Colors.redAccent,
+              title: const Text(
+                'Error!',
+                style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
+              ),
+              content: Text(
+                'Error occured.\nError: $e',
+                style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+              ));
+        });
+  }
+
+  Future<void> _tfResponse(
+      num d, num vin, num ind, num cap, num ro, String mode) async {
+    const url = 'http://pypj06.pythonanywhere.com';
+    final headers = {'Content-Type': 'application/json'};
+
+    final data = {
+      "d": d,
+      "vin": vin,
+      "inductor": ind,
+      "capacitor": cap,
+      "resistor": ro,
+      "mode": mode,
+    };
+
+    final response = await http.post(Uri.parse(url),
+        headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body)['transfer_func'];
+      setState(() {
+        tfString = result.substring(72);
+      });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text(
+                  'Error: ${response.statusCode}\n\n${jsonDecode(response.body)['error']}'),
+            );
+          });
+    }
+  }
+
+  void _initializeMainOp() {
+    setState(() {
+      _mainOpInitialized = false;
+    });
   }
 
   List<dynamic> specs(
@@ -285,25 +401,27 @@ class _CalcPageState extends State<CalcPage> {
     }
   }
 
-  void _calulateSpecs() {
-    setState(() {
-      _verifyIp();
+  Future<void> _calulateSpecs() async {
+    _initializeMainOp();
+    await _checkInternetConnectivity();
+    _verifyIp();
 
-      num d;
-      num opI;
-      num indI;
-      num ipI;
-      num ipPower;
-      num opPower;
-      num crL;
-      num crIndRiplI;
-      num ind;
-      num iRipl;
-      num maxindI;
-      num minindI;
-      num cap;
-      num esr;
+    num d;
+    num opI;
+    num indI;
+    num ipI;
+    num ipPower;
+    num opPower;
+    num crL;
+    num crIndRiplI;
+    num ind;
+    num iRipl;
+    num maxindI;
+    num minindI;
+    num cap;
+    num esr;
 
+    if (iConnection) {
       [
         d,
         opI,
@@ -329,86 +447,103 @@ class _CalcPageState extends State<CalcPage> {
           num.parse(vrp.text));
 
       ipString = """Converter Parameters
-      \tMode = $_mode
-      \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
-      \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
-      \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
-      \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
-      \tIrp = ${ipIripl.text}%
-      \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
+\tMode = $_mode
+  \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
+  \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
+  \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
+  \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
+  \tIrp = ${ipIripl.text}%
+  \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
 
       opString = """Converter Parameters
-       \tDuty Cycle = ${d.toStringAsFixed(3)}
-       \tPower Input = ${ipPower.toStringAsFixed(3)}W
-       \tPower output = ${opPower.toStringAsFixed(3)}W
-       \tOutput Current = ${opI.toStringAsFixed(3)}A
-       \tInductor Current = ${indI.toStringAsFixed(3)}A
-       \tInput Current = ${ipI.toStringAsFixed(3)}A
-       \tCritical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
-       \tRipple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
-       \tContinuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
-       \tRipple Current due to L = ${iRipl.toStringAsFixed(3)}A
-       \tMaximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
-       \tMinimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
-       \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
-       \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
+   \tDuty Cycle = ${d.toStringAsFixed(3)}
+   \tPower Input = ${ipPower.toStringAsFixed(3)}W
+   \tPower output = ${opPower.toStringAsFixed(3)}W
+   \tOutput Current = ${opI.toStringAsFixed(3)}A
+   \tInductor Current = ${indI.toStringAsFixed(3)}A
+   \tInput Current = ${ipI.toStringAsFixed(3)}A
+   \tCritical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
+   \tRipple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
+   \tContinuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
+   \tRipple Current due to L = ${iRipl.toStringAsFixed(3)}A
+   \tMaximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
+   \tMinimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
+   \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
+   \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
 
-      tfString = returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
+      // tfString =
+      //     returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
+      await _tfResponse(
+          d, num.parse(vin.text), ind, cap, num.parse(ro.text), _mode);
 
-      mainOp = "$opString\nTransferFunction\n$tfString";
-
-      String history = '$ipString\n$mainOp';
-      int srNo = _histList.length + 1;
-      var histMap = {
-        'no': srNo,
-        'mode': _mode,
-        'D': d,
-        'vin': vin.text,
-        'vo': vo.text,
-        'ro': ro.text,
-        'fsw': fsw.text,
-        'ind': ind,
-        'cap': cap,
-        'hist': history
-      };
-      _histList.add(histMap);
-      try {
-        _saveListToJsonFile(_histList, _filePath);
-      } on Exception catch (e) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              icon: const Icon(Icons.error_outline_rounded),
-              surfaceTintColor: Colors.redAccent,
-              title: const Text(
-                'Error!',
-                style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-              ),
-              content: Text(
-                'Error occured while saving file.\nError: $e.',
-                style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-                  ),
+      setState(() {
+        mainOp = "$opString\nTransferFunction\nH(s) =\n$tfString";
+        String history = '$ipString\n$mainOp';
+        int srNo = _histList.length + 1;
+        var histMap = {
+          'no': srNo,
+          'mode': _mode,
+          'D': d,
+          'vin': vin.text,
+          'vo': vo.text,
+          'ro': ro.text,
+          'fsw': fsw.text,
+          'ind': ind,
+          'cap': cap,
+          'hist': history
+        };
+        _histList.add(histMap);
+        try {
+          _saveListToJsonFile(_histList, _filePath);
+        } on Exception catch (e) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                icon: const Icon(Icons.error_outline_rounded),
+                surfaceTintColor: Colors.redAccent,
+                title: const Text(
+                  'Error!',
+                  style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
                 ),
-              ],
-            );
-          },
-        );
+                content: Text(
+                  'Error occured while saving history.\nError: $e.',
+                  style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        vin.text = '';
+        vo.text = '';
+        ro.text = '';
+        fsw.text = '';
+        ipIripl.text = '';
+        vrp.text = '';
+      });
+    } else {
+      if (fdbk == 'Please check your internet connection.') {
+        _noInternetDialog(fdbk);
+      } else {
+        _exceptionDialog(fdbk);
       }
+    }
+  }
 
-      vin.text = '';
-      vo.text = '';
-      ro.text = '';
-      fsw.text = '';
-      ipIripl.text = '';
-      vrp.text = '';
+  void _initiateCalculateSpecs() {
+    _calulateSpecs().then((_) {
+      setState(() {
+        _mainOpInitialized = true;
+      });
     });
   }
 
@@ -823,7 +958,7 @@ class _CalcPageState extends State<CalcPage> {
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: _calulateSpecs,
+                    onPressed: _initiateCalculateSpecs,
                     child: const Text(
                       'Calculate',
                       style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
@@ -859,12 +994,15 @@ class _CalcPageState extends State<CalcPage> {
                   controller: scrollOp,
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.all(10),
-                  child: Text(
-                    mainOp,
-                    style: const TextStyle(
-                        fontFamily: 'FiraCodeNerdFontMono',
-                        fontWeight: FontWeight.w200),
-                  ),
+                  
+                  child: _mainOpInitialized
+                      ? Text(
+                          mainOp,
+                          style: const TextStyle(
+                              fontFamily: 'FiraCodeNerdFontMono',
+                              fontWeight: FontWeight.w200),
+                        )
+                      : const Center(child: CircularProgressIndicator()),
                 ),
               ),
             ),

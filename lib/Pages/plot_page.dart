@@ -20,10 +20,13 @@ class PlotPage extends StatefulWidget {
 
 class _PlotPageState extends State<PlotPage> {
   late Uint8List bytes = Uint8List(0);
-  late Image img = Image.memory(bytes, fit: BoxFit.fitWidth,);
+  late Image img = Image.memory(
+    bytes,
+    fit: BoxFit.fitWidth,
+  );
   bool _isInitialized = false;
-  late bool connection;
-  late bool _isImg;
+  // late bool connection;
+  late bool _isImg = true;
   late String filePath;
 
   @override
@@ -39,13 +42,13 @@ class _PlotPageState extends State<PlotPage> {
       if (connection) {
         await _plotResponse();
         setState(() {
-          _isInitialized = true;
           _isImg = true;
+          _isInitialized = true;
         });
       } else {
         setState(() {
-          _isInitialized = true;
           _isImg = false;
+          _isInitialized = true;
         });
         showDialog(
             context: context,
@@ -66,8 +69,8 @@ class _PlotPageState extends State<PlotPage> {
       }
     } on Exception catch (e) {
       setState(() {
-        _isInitialized = true;
         _isImg = false;
+        _isInitialized = true;
       });
       showDialog(
           context: context,
@@ -92,14 +95,14 @@ class _PlotPageState extends State<PlotPage> {
     try {
       final response = await http.get(Uri.parse('https://www.google.com'));
       if (response.statusCode == 200) {
-        return connection = true;
+        return true;
       } else {
-        return connection = false;
+        return false;
       }
     } on TimeoutException {
-      return connection = false;
+      return false;
     } catch (_) {
-      return connection = false;
+      return false;
     }
   }
 
@@ -184,9 +187,9 @@ class _PlotPageState extends State<PlotPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    // if (!_isInitialized) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
 
     return _isImg
         ? Scaffold(
@@ -198,7 +201,9 @@ class _PlotPageState extends State<PlotPage> {
                 style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
               ),
             ),
-            body: Center(child: img),
+            body: _isInitialized
+                ? Center(child: img)
+                : const Center(child: CircularProgressIndicator()),
             floatingActionButton: FloatingActionButton(
               backgroundColor: Theme.of(context).colorScheme.secondary,
               foregroundColor: Theme.of(context).colorScheme.tertiary,
@@ -217,12 +222,14 @@ class _PlotPageState extends State<PlotPage> {
                 style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
               ),
             ),
-            body: const Center(
-              child: Text(
-                'No Plot.',
-                style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
-              ),
-            ),
+            body: _isInitialized
+                ? const Center(
+                    child: Text(
+                      'No Plot.',
+                      style: TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+                    ),
+                  )
+                : const Center(child: CircularProgressIndicator()),
           );
   }
 }

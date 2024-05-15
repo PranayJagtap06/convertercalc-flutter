@@ -42,6 +42,7 @@ dependencies:
   share_plus: ^9.0.0
   http: ^1.2.1
   http_client: ^1.5.3
+  tuple: ^2.0.2
   # path_provider_android: ^2.2.4
 
 dev_dependencies:
