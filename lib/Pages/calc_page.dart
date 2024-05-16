@@ -48,7 +48,7 @@ class _CalcPageState extends State<CalcPage> {
       \tMaximum inductor ripple current = 0.0A
       \tMinimum inductor ripple current = 0.0A
       \tOutput Capacitor = 0.0F
-      \tCapacitor ESR = 0.0Ohms""";
+      \tCapacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
   String tfString = '';
   late bool iConnection;
   late String fdbk;
@@ -119,7 +119,7 @@ class _CalcPageState extends State<CalcPage> {
     file.writeAsStringSync(jsonString);
   }
 
-  void _verifyIp() {
+  bool _verifyIp() {
     try {
       // Parse the input values to double
       num.parse(vin.text);
@@ -132,15 +132,19 @@ class _CalcPageState extends State<CalcPage> {
         // Check if ipIripl is a valid double or an empty string
         if (ipIripl.text.isEmpty || double.tryParse(ipIripl.text) != null) {
           // do nothing
+          return true;
         } else {
           _showInvalidInputDialog('Invalid input for Irp');
+          return false;
         }
       } else {
         _showInvalidInputDialog('Please select a mode');
+        return false;
       }
-    } catch (e) {
+    } on Exception catch (e) {
       // Handle invalid input
-      _showInvalidInputDialog('Please enter a valid numeric value.');
+      _showInvalidInputDialog('Please enter a valid numeric value.\nError: $e');
+      return false;
     }
   }
 
@@ -403,138 +407,141 @@ class _CalcPageState extends State<CalcPage> {
 
   Future<void> _calulateSpecs() async {
     _initializeMainOp();
-    await _checkInternetConnectivity();
-    _verifyIp();
+    bool fieldsVerified = _verifyIp();
 
-    num d;
-    num opI;
-    num indI;
-    num ipI;
-    num ipPower;
-    num opPower;
-    num crL;
-    num crIndRiplI;
-    num ind;
-    num iRipl;
-    num maxindI;
-    num minindI;
-    num cap;
-    num esr;
+    if (fieldsVerified) {
+      await _checkInternetConnectivity();
 
-    if (iConnection) {
-      [
-        d,
-        opI,
-        indI,
-        ipI,
-        ipPower,
-        opPower,
-        crL,
-        crIndRiplI,
-        ind,
-        iRipl,
-        maxindI,
-        minindI,
-        cap,
-        esr
-      ] = specs(
-          _mode,
-          num.parse(vin.text),
-          num.parse(vo.text),
-          num.parse(ro.text),
-          num.parse(fsw.text),
-          ipIripl.text,
-          num.parse(vrp.text));
+      num d;
+      num opI;
+      num indI;
+      num ipI;
+      num ipPower;
+      num opPower;
+      num crL;
+      num crIndRiplI;
+      num ind;
+      num iRipl;
+      num maxindI;
+      num minindI;
+      num cap;
+      num esr;
 
-      ipString = """Converter Parameters
+      if (iConnection) {
+        [
+          d,
+          opI,
+          indI,
+          ipI,
+          ipPower,
+          opPower,
+          crL,
+          crIndRiplI,
+          ind,
+          iRipl,
+          maxindI,
+          minindI,
+          cap,
+          esr
+        ] = specs(
+            _mode,
+            num.parse(vin.text),
+            num.parse(vo.text),
+            num.parse(ro.text),
+            num.parse(fsw.text),
+            ipIripl.text,
+            num.parse(vrp.text));
+
+        ipString = """Converter Parameters
 \tMode = $_mode
-  \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
-  \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
-  \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
-  \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
-  \tIrp = ${ipIripl.text}%
-  \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
+    \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
+    \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
+    \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
+    \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
+    \tIrp = ${ipIripl.text}%
+    \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
 
-      opString = """Converter Parameters
-   \tDuty Cycle = ${d.toStringAsFixed(3)}
-   \tPower Input = ${ipPower.toStringAsFixed(3)}W
-   \tPower output = ${opPower.toStringAsFixed(3)}W
-   \tOutput Current = ${opI.toStringAsFixed(3)}A
-   \tInductor Current = ${indI.toStringAsFixed(3)}A
-   \tInput Current = ${ipI.toStringAsFixed(3)}A
-   \tCritical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
-   \tRipple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
-   \tContinuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
-   \tRipple Current due to L = ${iRipl.toStringAsFixed(3)}A
-   \tMaximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
-   \tMinimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
-   \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
-   \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
+        opString = """Converter Parameters
+     \tDuty Cycle = ${d.toStringAsFixed(3)}
+     \tPower Input = ${ipPower.toStringAsFixed(3)}W
+     \tPower output = ${opPower.toStringAsFixed(3)}W
+     \tOutput Current = ${opI.toStringAsFixed(3)}A
+     \tInductor Current = ${indI.toStringAsFixed(3)}A
+     \tInput Current = ${ipI.toStringAsFixed(3)}A
+     \tCritical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
+     \tRipple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
+     \tContinuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
+     \tRipple Current due to L = ${iRipl.toStringAsFixed(3)}A
+     \tMaximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
+     \tMinimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
+     \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
+     \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
 
-      // tfString =
-      //     returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
-      await _tfResponse(
-          d, num.parse(vin.text), ind, cap, num.parse(ro.text), _mode);
+        // tfString =
+        //     returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
+        await _tfResponse(
+            d, num.parse(vin.text), ind, cap, num.parse(ro.text), _mode);
 
-      setState(() {
-        mainOp = "$opString\nTransferFunction\nH(s) =\n$tfString";
-        String history = '$ipString\n$mainOp';
-        int srNo = _histList.length + 1;
-        var histMap = {
-          'no': srNo,
-          'mode': _mode,
-          'D': d,
-          'vin': vin.text,
-          'vo': vo.text,
-          'ro': ro.text,
-          'fsw': fsw.text,
-          'ind': ind,
-          'cap': cap,
-          'hist': history
-        };
-        _histList.add(histMap);
-        try {
-          _saveListToJsonFile(_histList, _filePath);
-        } on Exception catch (e) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                icon: const Icon(Icons.error_outline_rounded),
-                surfaceTintColor: Colors.redAccent,
-                title: const Text(
-                  'Error!',
-                  style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-                ),
-                content: Text(
-                  'Error occured while saving history.\nError: $e.',
-                  style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
-                    ),
+        setState(() {
+          mainOp = "$opString\n\nTransferFunction\nH(s) =\n$tfString\n";
+          String history = '$ipString\n$mainOp';
+          int srNo = _histList.length + 1;
+          var histMap = {
+            'no': srNo,
+            'mode': _mode,
+            'D': d,
+            'vin': vin.text,
+            'vo': vo.text,
+            'ro': ro.text,
+            'fsw': fsw.text,
+            'ind': ind,
+            'cap': cap,
+            'hist': history
+          };
+          _histList.add(histMap);
+          try {
+            _saveListToJsonFile(_histList, _filePath);
+          } on Exception catch (e) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  icon: const Icon(Icons.error_outline_rounded),
+                  surfaceTintColor: Colors.redAccent,
+                  title: const Text(
+                    'Error!',
+                    style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
                   ),
-                ],
-              );
-            },
-          );
-        }
-        vin.text = '';
-        vo.text = '';
-        ro.text = '';
-        fsw.text = '';
-        ipIripl.text = '';
-        vrp.text = '';
-      });
-    } else {
-      if (fdbk == 'Please check your internet connection.') {
-        _noInternetDialog(fdbk);
+                  content: Text(
+                    'Error occured while saving history.\nError: $e.',
+                    style: const TextStyle(fontFamily: 'FiraCodeNerdFontMono'),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+          vin.text = '';
+          vo.text = '';
+          ro.text = '';
+          fsw.text = '';
+          ipIripl.text = '';
+          vrp.text = '';
+        });
       } else {
-        _exceptionDialog(fdbk);
+        if (fdbk == 'Please check your internet connection.') {
+          _noInternetDialog(fdbk);
+        } else {
+          _exceptionDialog(fdbk);
+        }
       }
     }
   }
@@ -563,7 +570,7 @@ class _CalcPageState extends State<CalcPage> {
       \tMaximum inductor ripple current = 0.0A
       \tMinimum inductor ripple current = 0.0A
       \tOutput Capacitor = 0.0F
-      \tCapacitor ESR = 0.0Ohms""";
+      \tCapacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
     });
   }
 
@@ -990,19 +997,25 @@ class _CalcPageState extends State<CalcPage> {
               child: Scrollbar(
                 thumbVisibility: true,
                 controller: scrollOp,
-                child: SingleChildScrollView(
-                  controller: scrollOp,
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(10),
-                  
-                  child: _mainOpInitialized
-                      ? Text(
-                          mainOp,
-                          style: const TextStyle(
-                              fontFamily: 'FiraCodeNerdFontMono',
-                              fontWeight: FontWeight.w200),
-                        )
-                      : const Center(child: CircularProgressIndicator()),
+                child: Container(
+                  width: 500,
+                  height: 510,
+                  // padding: const EdgeInsets.all(12),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      controller: scrollOp,
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.all(12),
+                      child: _mainOpInitialized
+                          ? Text(
+                              mainOp,
+                              style: const TextStyle(
+                                  fontFamily: 'FiraCodeNerdFontMono',
+                                  fontWeight: FontWeight.w200),
+                            )
+                          : const Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
                 ),
               ),
             ),
