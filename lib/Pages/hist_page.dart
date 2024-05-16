@@ -306,7 +306,7 @@ class _HistPageState extends State<HistPage> {
           final result = await Share.shareXFiles(
             [XFile(filePath)],
             subject: 'History File',
-            text: 'Here is the generated histpry file.',
+            text: 'Here is the generated history file.',
           );
           if (result.status == ShareResultStatus.success) {
             ScaffoldMessenger.of(context).showSnackBar(
