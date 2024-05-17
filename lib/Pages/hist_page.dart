@@ -396,6 +396,13 @@ class _HistPageState extends State<HistPage> {
           'History',
           style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
         ),
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(50), right: Radius.circular(50)),
+        ),
+        elevation: 10,
+        shadowColor: Theme.of(context).colorScheme.primary,
+        primary: true,
       ),
       body: _histList.isEmpty
           ? const Center(

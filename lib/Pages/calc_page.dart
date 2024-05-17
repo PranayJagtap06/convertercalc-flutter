@@ -483,7 +483,7 @@ class _CalcPageState extends State<CalcPage> {
             d, num.parse(vin.text), ind, cap, num.parse(ro.text), _mode);
 
         setState(() {
-          mainOp = "$opString\n\nTransferFunction\nH(s) =\n$tfString\n";
+          mainOp = "$opString\n\nTransferFunction\nH(s) =$tfString\n";
           String history = '$ipString\n$mainOp';
           int srNo = _histList.length + 1;
           var histMap = {
@@ -624,6 +624,13 @@ class _CalcPageState extends State<CalcPage> {
           'ConverterCalc',
           style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
         ),
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(50), right: Radius.circular(50)),
+        ),
+        elevation: 10,
+        shadowColor: Theme.of(context).colorScheme.primary,
+        primary: true,
       ),
       body: SingleChildScrollView(
         controller: scrollMain,

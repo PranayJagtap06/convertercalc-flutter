@@ -222,6 +222,13 @@ class _CalcHomePageState extends State<CalcHomePage> {
           'Home',
           style: TextStyle(fontFamily: 'FiraCodeNerdFont'),
         ),
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(50), right: Radius.circular(50)),
+        ),
+        elevation: 10,
+        shadowColor: Theme.of(context).colorScheme.primary,
+        primary: true,
         actions: [
           IconButton(
             icon: Icon(widget.isDark ? Icons.light_mode : Icons.dark_mode),
@@ -310,7 +317,10 @@ class _CalcHomePageState extends State<CalcHomePage> {
               ),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CalcMainPage(isDark: widget.isDark,)),
+                MaterialPageRoute(
+                    builder: (context) => CalcMainPage(
+                          isDark: widget.isDark,
+                        )),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
