@@ -46,11 +46,14 @@ class _CalcMainPageState extends State<CalcMainPage> {
           useLegacyColorScheme: false,
           enableFeedback: true,
           type: BottomNavigationBarType.fixed,
+          elevation: 10,
           currentIndex: _selectPage,
+          selectedLabelStyle: const TextStyle(fontFamily: 'FiraCodeNerdFont'),
+          unselectedLabelStyle: const TextStyle(fontFamily: 'FiraCodeNerdFont'),
           onTap: _navigateBottomBar,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.calculate), label: 'Your Calc'),
+                icon: Icon(Icons.calculate), label: 'Your Calc', ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.history), label: 'Calc History'),
           ],
