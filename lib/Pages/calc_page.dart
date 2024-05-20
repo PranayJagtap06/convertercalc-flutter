@@ -483,7 +483,7 @@ class _CalcPageState extends State<CalcPage> {
             d, num.parse(vin.text), ind, cap, num.parse(ro.text), _mode);
 
         setState(() {
-          mainOp = "$opString\n\nTransferFunction\nH(s) =$tfString\n";
+          mainOp = "$opString\n\nTransferFunction\nH(s) =\n$tfString\n";
           String history = '$ipString\n$mainOp';
           int srNo = _histList.length + 1;
           var histMap = {
