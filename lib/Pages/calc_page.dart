@@ -1004,7 +1004,7 @@ class _CalcPageState extends State<CalcPage> {
               child: Scrollbar(
                 thumbVisibility: true,
                 controller: scrollOp,
-                child: Container(
+                child: SizedBox(
                   width: 500,
                   height: 510,
                   // padding: const EdgeInsets.all(12),

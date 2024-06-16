@@ -25,7 +25,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
   final ScrollController scrollContent = ScrollController();
   final String aboutHeadline = "ℹ About";
   final String aboutBody1 =
-      """\n\nBuild 🏗️ with Flutter, ConverterCalc 📱 is a one stop solution to find your dc-dc converter specifications. ConverterCalc takes some input parameters like converter type (buck, boost or buck-boost), input voltage, output voltage, output resistance, frequency, % input ripple current (optional) and % output ripple voltage to calculate the converter specifications like input and output power or current, inductor current and most importantly inductor and capacitor values. Make sure to finalize prerequisite input parameters before calculating converter specifications.""";
+      """\n\nBuild 🏗️ with Flutter, ConverterCalc 📱 is a one stop solution to find your dc-dc converter specifications. ConverterCalc takes some input parameters like converter type (buck, boost or buck-boost), input voltage, output voltage, output resistance, frequency, % input ripple current (optional) and % output ripple voltage to calculate the converter specifications like input and output power or current, inductor current and most importantly inductor, capacitor values and converter transfer function. Make sure to finalize prerequisite input parameters before calculating converter specifications. You can also plot converter transfer function response from the history dialog box.""";
   final String aboutBody2 = "\n\nBuild With \u2764 in 🇮🇳";
   final String author = "👨🏽‍💻 About Developer";
   final String authorBody =
