@@ -1,4 +1,4 @@
-# convertercalc-flutter
+# 🦄 convertercalc_flutter
 ConverterCalc is calculator 📱 for computing dc-dc converter specifications and plotting the transient response of the converter. Build with Flutter.
 
 ## Features
