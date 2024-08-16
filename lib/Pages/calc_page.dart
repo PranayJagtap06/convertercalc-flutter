@@ -35,20 +35,20 @@ class _CalcPageState extends State<CalcPage> {
   String ipString = '';
   String opString = '';
   String mainOp = """Converter Parameters
-      \tDuty Cycle = 0.0
-      \tPower Input = 0.0W
-      \tPower output = 0.0W
-      \tOutput Current = 0.0A
-      \tInductor Current = 0.0A
-      \tInput Current = 0.0A
-      \tCritical Inductance Value(Lcr)= 0.0H
-      \tRipple Current due to Lcr = 0.0A
-      \tContinuous Conduction Inductor Value (L) = 0.0H
-      \tRipple Current due to L = 0.0A
-      \tMaximum inductor ripple current = 0.0A
-      \tMinimum inductor ripple current = 0.0A
-      \tOutput Capacitor = 0.0F
-      \tCapacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
+  Duty Cycle = 0.0
+  Power Input = 0.0W
+  Power output = 0.0W
+  Output Current = 0.0A
+  Inductor Current = 0.0A
+  Input Current = 0.0A
+  Critical Inductance Value(Lcr)= 0.0H
+  Ripple Current due to Lcr = 0.0A
+  Continuous Conduction Inductor Value (L) = 0.0H
+  Ripple Current due to L = 0.0A
+  Maximum inductor ripple current = 0.0A
+  Minimum inductor ripple current = 0.0A
+  Output Capacitor = 0.0F
+  Capacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
   String tfString = '';
   late bool iConnection;
   late String fdbk;
@@ -453,29 +453,29 @@ class _CalcPageState extends State<CalcPage> {
             num.parse(vrp.text));
 
         ipString = """Converter Parameters
-\tMode = $_mode
-    \tVin = ${num.parse(vin.text).toStringAsFixed(3)}V
-    \tVo = ${num.parse(vo.text).toStringAsFixed(3)}V
-    \tR = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
-    \tfsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
-    \tIrp = ${ipIripl.text}%
-    \tVrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
+  Mode = $_mode
+  Vin = ${num.parse(vin.text).toStringAsFixed(3)}V
+  Vo = ${num.parse(vo.text).toStringAsFixed(3)}V
+  R = ${num.parse(ro.text).toStringAsFixed(3)}Ohms
+  fsw = ${num.parse(fsw.text).toStringAsFixed(3)}Hz
+  Irp = ${ipIripl.text}%
+  Vrp = ${num.parse(vrp.text).toStringAsFixed(3)}%""";
 
         opString = """Converter Parameters
-     \tDuty Cycle = ${d.toStringAsFixed(3)}
-     \tPower Input = ${ipPower.toStringAsFixed(3)}W
-     \tPower output = ${opPower.toStringAsFixed(3)}W
-     \tOutput Current = ${opI.toStringAsFixed(3)}A
-     \tInductor Current = ${indI.toStringAsFixed(3)}A
-     \tInput Current = ${ipI.toStringAsFixed(3)}A
-     \tCritical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
-     \tRipple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
-     \tContinuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
-     \tRipple Current due to L = ${iRipl.toStringAsFixed(3)}A
-     \tMaximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
-     \tMinimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
-     \tOutput Capacitor = ${cap.toStringAsExponential(3)}F
-     \tCapacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
+  Duty Cycle = ${d.toStringAsFixed(3)}
+  Power Input = ${ipPower.toStringAsFixed(3)}W
+  Power output = ${opPower.toStringAsFixed(3)}W
+  Output Current = ${opI.toStringAsFixed(3)}A
+  Inductor Current = ${indI.toStringAsFixed(3)}A
+  Input Current = ${ipI.toStringAsFixed(3)}A
+  Critical Inductance Value(Lcr)= ${crL.toStringAsExponential(3)}H
+  Ripple Current due to Lcr = ${crIndRiplI.toStringAsFixed(3)}A
+  Continuous Conduction Inductor Value (L) = ${ind.toStringAsExponential(3)}H
+  Ripple Current due to L = ${iRipl.toStringAsFixed(3)}A
+  Maximum inductor ripple current = ${maxindI.toStringAsFixed(3)}A
+  Minimum inductor ripple current = ${minindI.toStringAsFixed(3)}A
+  Output Capacitor = ${cap.toStringAsExponential(3)}F
+  Capacitor ESR = ${esr.toStringAsFixed(5)}Ohms""";
 
         // tfString =
         //     returnTF(_mode, num.parse(vin.text), d, num.parse(ro.text), ind, cap);
@@ -484,7 +484,7 @@ class _CalcPageState extends State<CalcPage> {
 
         setState(() {
           mainOp = "$opString\n\nTransferFunction\nH(s) =\n$tfString\n";
-          String history = '$ipString\n$mainOp';
+          String history = '$ipString\n\n$mainOp';
           int srNo = _histList.length + 1;
           var histMap = {
             'no': srNo,
@@ -557,20 +557,20 @@ class _CalcPageState extends State<CalcPage> {
   void _clear() {
     setState(() {
       mainOp = """Converter Parameters
-      \tDuty Cycle = 0.0
-      \tPower Input = 0.0W
-      \tPower output = 0.0W
-      \tOutput Current = 0.0A
-      \tInductor Current = 0.0A
-      \tInput Current = 0.0A
-      \tCritical Inductance Value(Lcr)= 0.0H
-      \tRipple Current due to Lcr = 0.0A
-      \tContinuous Conduction Inductor Value (L) = 0.0H
-      \tRipple Current due to L = 0.0A
-      \tMaximum inductor ripple current = 0.0A
-      \tMinimum inductor ripple current = 0.0A
-      \tOutput Capacitor = 0.0F
-      \tCapacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
+  Duty Cycle = 0.0
+  Power Input = 0.0W
+  Power output = 0.0W
+  Output Current = 0.0A
+  Inductor Current = 0.0A
+  Input Current = 0.0A
+  Critical Inductance Value(Lcr)= 0.0H
+  Ripple Current due to Lcr = 0.0A
+  Continuous Conduction Inductor Value (L) = 0.0H
+  Ripple Current due to L = 0.0A
+  Maximum inductor ripple current = 0.0A
+  Minimum inductor ripple current = 0.0A
+  Output Capacitor = 0.0F
+  Capacitor ESR = 0.0Ohms\n\nTransfer Function\nH(s) =\n\n\n\n\n""";
     });
   }
 
