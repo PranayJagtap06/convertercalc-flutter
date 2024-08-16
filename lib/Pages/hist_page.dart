@@ -35,7 +35,8 @@ class _HistPageState extends State<HistPage> {
       filePath = '$rootPath/history.txt';
       _loadJsonFile(_filePath).then((histList) {
         setState(() {
-          _histList.addAll(histList);
+          // reverse the list before adding
+          _histList.addAll(histList.reversed.toList());
         });
       });
     });
