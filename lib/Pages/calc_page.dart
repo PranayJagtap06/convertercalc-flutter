@@ -977,9 +977,9 @@ class _CalcPageState extends State<CalcPage> {
                       'Calculate',
                       style: TextStyle(fontFamily: 'FiraCodeNerdFontPropo'),
                     )),
-                const SizedBox(
-                  width: 16.0,
-                ),
+                // const SizedBox(
+                //   width: 16.0,
+                // ),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 1.0,

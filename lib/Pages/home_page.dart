@@ -30,6 +30,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
   final String author = "👨🏽‍💻 About Developer";
   final String authorBody =
       """\nPranay Jagtap is an Electrical Engineer ⚡ turned Python 🐍 enthusiast and Machine Learning 🤖 explorer. He also loves to build apps to simplify work, one such effort is ConverterCalc.""";
+  final String follow = "🚀 Follow on";
   final List<dynamic> _histList = [];
   late String _filePath = '/calc_hist.json';
   late String _statePath = '/state.json';
@@ -340,8 +341,8 @@ class _CalcHomePageState extends State<CalcHomePage> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 15.0,
-                shadowColor: Colors.deepOrange,
-                backgroundColor: Colors.deepOrangeAccent,
+                shadowColor: Colors.black87,
+                backgroundColor: Colors.black87,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
@@ -410,6 +411,111 @@ class _CalcHomePageState extends State<CalcHomePage> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Card(
+              elevation: 15.0,
+              surfaceTintColor: Colors.blueAccent,
+              shadowColor: Colors.blueAccent,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      follow,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontFamily: 'FiraCodeNerdFontPropo',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0), 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              const url = 'https://pranayjml.odoo.com';
+                              try {
+                                final intent = AndroidIntent(
+                                  action: 'action_view',
+                                  data: Uri.encodeFull(url),
+                                );
+                                intent.launch();
+                              } catch (e) {
+                                _showErrorDialog(context,
+                                    'Failed to reach website. Error: $e');
+                              }
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.globe),
+                            iconSize: 30,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.white70,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              const url =
+                                  'https://linkedin.com/in/pranayj-ml-engineer';
+                              try {
+                                final intent = AndroidIntent(
+                                  action: 'action_view',
+                                  data: Uri.encodeFull(url),
+                                );
+                                intent.launch();
+                              } catch (e) {
+                                _showErrorDialog(context,
+                                    'Failed to reach linkedin. Error: $e');
+                              }
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.linkedin),
+                            iconSize: 30,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.black87,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              const url = 'https://github.com/PranayJagtap06';
+                              try {
+                                final intent = AndroidIntent(
+                                  action: 'action_view',
+                                  data: Uri.encodeFull(url),
+                                );
+                                intent.launch();
+                              } catch (e) {
+                                _showErrorDialog(context,
+                                    'Failed to reach github. Error: $e');
+                              }
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.github),
+                            iconSize: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20.0), 
           ],
         ),
       ),
