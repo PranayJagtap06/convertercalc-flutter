@@ -90,6 +90,7 @@ class _CalcAppState extends State<CalcApp> {
         primary: Colors.white,
         secondary: Colors.amber,
         tertiary: Colors.black,
+        background: const Color.fromARGB(255, 47, 47, 47)
       ),
     );
 

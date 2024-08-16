@@ -43,6 +43,7 @@ dependencies:
   http: ^1.2.1
   http_client: ^1.5.3
   tuple: ^2.0.2
+  photo_view: ^0.14.0
   # path_provider_android: ^2.2.4
 
 dev_dependencies:

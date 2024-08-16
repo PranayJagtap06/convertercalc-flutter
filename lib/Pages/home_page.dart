@@ -6,6 +6,7 @@ import 'package:android_intent/android_intent.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_view/photo_view.dart';
 
 class CalcHomePage extends StatefulWidget {
   const CalcHomePage({
@@ -25,11 +26,11 @@ class _CalcHomePageState extends State<CalcHomePage> {
   final ScrollController scrollContent = ScrollController();
   final String aboutHeadline = "ℹ About";
   final String aboutBody1 =
-      """\n\nBuild 🏗️ with Flutter, ConverterCalc 📱 is a one stop solution to find your dc-dc converter specifications. ConverterCalc takes some input parameters like converter type (buck, boost or buck-boost), input voltage, output voltage, output resistance, frequency, % input ripple current (optional) and % output ripple voltage to calculate the converter specifications like input and output power or current, inductor current and most importantly inductor, capacitor values and converter transfer function. Make sure to finalize prerequisite input parameters before calculating converter specifications. You can also plot converter transfer function response from the history dialog box.""";
+      """, 📱 ConverterCalc is a one stop solution to find your dc-dc converter specifications. ConverterCalc takes some input parameters like converter type (buck, boost or buck-boost), input voltage, output voltage, output resistance, frequency, % input ripple current (optional) and % output ripple voltage to calculate the converter specifications like input and output power or current, inductor current and most importantly inductor, capacitor values and converter transfer function. Make sure to finalize prerequisite input parameters before calculating converter specifications. You can also 📈 plot converter transfer function response from the history dialog box.""";
   final String aboutBody2 = "\n\nBuild With \u2764 in 🇮🇳";
   final String author = "👨🏽‍💻 About Developer";
   final String authorBody =
-      """\nPranay Jagtap is an Electrical Engineer ⚡ turned Python 🐍 enthusiast and Machine Learning 🤖 explorer. He also loves to build apps to simplify work, one such effort is ConverterCalc.""";
+      """ is an ⚡ Electrical Engineer turned 🐍 Python enthusiast and 🤖 Machine Learning explorer. He also loves to build apps to simplify work, one such effort is ConverterCalc.""";
   final String follow = "🚀 Follow on";
   final List<dynamic> _histList = [];
   late String _filePath = '/calc_hist.json';
@@ -275,7 +276,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Text.rich(
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.justify,
                   TextSpan(
                     children: [
                       TextSpan(
@@ -286,11 +287,26 @@ class _CalcHomePageState extends State<CalcHomePage> {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
+                      const TextSpan(
+                        text: """\n\n🏗️ Build with """,
+                        style: TextStyle(
+                          fontFamily: 'FiraCodeNerdFontMono',
+                          fontSize: 11,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: """Flutter""",
+                        style: TextStyle(
+                          fontFamily: 'FiraCodeNerdFontMono',
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       TextSpan(
                         text: aboutBody1,
                         style: const TextStyle(
                           fontFamily: 'FiraCodeNerdFontMono',
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                       TextSpan(
@@ -393,19 +409,73 @@ class _CalcHomePageState extends State<CalcHomePage> {
                         fontSize: 20,
                       ),
                     ),
-                    const SizedBox(height: 8.0), // Add some spacing
-                    const CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/portrait.jpg'), // Path to your image asset
-                      radius: 40.0, // Adjust the radius as needed
-                    ),
-                    Text(
-                      authorBody,
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontFamily: 'FiraCodeNerdFontMono',
-                        fontSize: 12,
-                      ),
+                    // const SizedBox(height: 8.0), // Add some spacing
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // const CircleAvatar(
+                        //   backgroundImage: AssetImage('assets/images/portrait.jpg'), // Path to your image asset
+                        //   radius: 40.0, // Adjust the radius as needed
+                        // ),
+                        GestureDetector(
+                          onTap: () {
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) {
+                            //     return Dialog(
+                            //       child: Image.asset('assets/images/portrait.jpg'),
+                            //     );
+                            //   },
+                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhotoView(
+                                  imageProvider: const AssetImage('assets/images/portrait.jpg'),
+                                ),
+                              ),
+                            );
+                          },
+                          child: const CircleAvatar(
+                            backgroundImage: AssetImage('assets/images/portrait.jpg'),
+                            radius: 40.0,
+                          ),
+                        ),
+                        const SizedBox(width: 10.0,),
+                        // Text(
+                        //   authorBody,
+                        //   textAlign: TextAlign.justify,
+                        //   style: const TextStyle(
+                        //     fontFamily: 'FiraCodeNerdFontMono',
+                        //     fontSize: 11,
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: """Pranay Jagtap""",
+                                  style: TextStyle(
+                                    fontFamily: 'FiraCodeNerdFontMono',
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: authorBody,
+                                  style: const TextStyle(
+                                    fontFamily: 'FiraCodeNerdFontMono',
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.justify,
+                            overflow: TextOverflow.visible, // Add this to handle overflow
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

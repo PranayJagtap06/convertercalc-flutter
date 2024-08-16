@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 
 import 'package:share_plus/share_plus.dart';
+import 'package:photo_view/photo_view.dart';
 
 class PlotPage extends StatefulWidget {
   const PlotPage({super.key, required this.plotdata});
@@ -209,7 +210,22 @@ class _PlotPageState extends State<PlotPage> {
               primary: true,
             ),
             body: _isInitialized
-                ? Center(child: img)
+                // ? Center(child: img)
+                ? Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PhotoView(
+                            imageProvider: MemoryImage(bytes),
+                          ),
+                        ),
+                      );
+                    },
+                    child: img,
+                  ),
+                )
                 : const Center(child: CircularProgressIndicator()),
             floatingActionButton: FloatingActionButton(
               backgroundColor: Theme.of(context).colorScheme.secondary,
